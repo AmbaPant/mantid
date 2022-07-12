@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>673</width>
+    <width>614</width>
     <height>730</height>
    </rect>
   </property>
@@ -67,7 +67,11 @@ QGroupBox:title {
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit_2"/>
+            <widget class="QLineEdit" name="project_name_line_edit">
+             <property name="text">
+              <string>220321script3</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -76,7 +80,7 @@ QGroupBox:title {
            <rect>
             <x>0</x>
             <y>70</y>
-            <width>481</width>
+            <width>411</width>
             <height>41</height>
            </rect>
           </property>
@@ -89,7 +93,11 @@ QGroupBox:title {
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit_3"/>
+            <widget class="QLineEdit" name="focused_data_path_line_edit">
+             <property name="text">
+              <string>Save_gss_305761_307521_bank_1_bgsub.gsa</string>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QPushButton" name="pushButton">
@@ -105,7 +113,7 @@ QGroupBox:title {
            <rect>
             <x>0</x>
             <y>120</y>
-            <width>651</width>
+            <width>581</width>
             <height>41</height>
            </rect>
           </property>
@@ -118,7 +126,11 @@ QGroupBox:title {
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit_4"/>
+            <widget class="QLineEdit" name="phase_file_path_line_edit">
+             <property name="text">
+              <string>FE_GAMMA.cif</string>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QPushButton" name="pushButton_2">
@@ -132,7 +144,7 @@ QGroupBox:title {
          <widget class="QWidget" name="horizontalLayoutWidget_7">
           <property name="geometry">
            <rect>
-            <x>490</x>
+            <x>420</x>
             <y>70</y>
             <width>161</width>
             <height>41</height>
@@ -147,9 +159,9 @@ QGroupBox:title {
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit_5">
+            <widget class="QLineEdit" name="data_indexing_line_edit">
              <property name="text">
-              <string/>
+              <string>1</string>
              </property>
             </widget>
            </item>
@@ -183,7 +195,7 @@ QGroupBox:title {
            <widget class="QPushButton" name="refine_button">
             <property name="geometry">
              <rect>
-              <x>510</x>
+              <x>460</x>
               <y>40</y>
               <width>121</width>
               <height>71</height>
@@ -198,7 +210,7 @@ QGroupBox:title {
              <rect>
               <x>20</x>
               <y>30</y>
-              <width>227</width>
+              <width>231</width>
               <height>41</height>
              </rect>
             </property>
@@ -231,7 +243,7 @@ QGroupBox:title {
              <rect>
               <x>20</x>
               <y>90</y>
-              <width>291</width>
+              <width>281</width>
               <height>41</height>
              </rect>
             </property>
@@ -258,9 +270,9 @@ QGroupBox:title {
            <widget class="QWidget" name="verticalLayoutWidget_4">
             <property name="geometry">
              <rect>
-              <x>330</x>
+              <x>310</x>
               <y>20</y>
-              <width>160</width>
+              <width>155</width>
               <height>111</height>
              </rect>
             </property>
@@ -288,13 +300,6 @@ QGroupBox:title {
              </item>
             </layout>
            </widget>
-           <zorder>refine_button</zorder>
-           <zorder>verticalSpacer</zorder>
-           <zorder>horizontalLayoutWidget</zorder>
-           <zorder>horizontalLayoutWidget_2</zorder>
-           <zorder>verticalLayoutWidget_4</zorder>
-           <zorder>groupBox</zorder>
-           <zorder>groupBox</zorder>
           </widget>
          </item>
         </layout>
@@ -388,8 +393,8 @@ QGroupBox:title {
            </layout>
           </widget>
          </widget>
-         <zorder>verticalSpacer_2</zorder>
          <zorder>groupBox_4</zorder>
+         <zorder></zorder>
         </widget>
        </item>
       </layout>

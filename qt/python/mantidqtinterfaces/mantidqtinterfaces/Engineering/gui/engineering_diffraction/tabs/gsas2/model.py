@@ -209,7 +209,7 @@ class GSAS2Model(object):
         axes.legend(fontsize=8.0).set_draggable(True)
         plt.show()
 
-    def run_model(self, refinement_parameters):
+    def run_model(self, load_parameters, refinement_parameters, ):
 
         success_state = 0
 
@@ -262,12 +262,12 @@ class GSAS2Model(object):
         path_to_gsas2 = "/home/danielmurphy/gsas2/"
         save_directory = "/home/danielmurphy/Downloads/GSASdata/new_outputs/"
         data_directory = "/home/danielmurphy/Desktop/GSASMantiddata_030322/"
-        refinement_method = refinement_parameters[0] # "Pawley"
-        data_files = ["Save_gss_305761_307521_bank_1_bgsub.gsa"]  # ["ENGINX_305761_307521_all_banks_TOF.gss"]
-        histogram_indexing = [1]  # assume only indexing when using 1 histogram file
+        refinement_method = refinement_parameters[0]  # "Pawley"
+        data_files = [load_parameters[1]]  # ["Save_gss_305761_307521_bank_1_bgsub.gsa"]  # ["ENGINX_305761_307521_all_banks_TOF.gss"]
+        histogram_indexing = [int(x) for x in load_parameters[2]]  # [1]  # assume only indexing when using 1 histogram file
         instrument_files = ["ENGINX_305738_bank_1.prm"]
-        phase_files = ["FE_GAMMA.cif"]
-        project_name = "220321script3"
+        phase_files = [load_parameters[3]]  # ["FE_GAMMA.cif"]
+        project_name = load_parameters[0]  # "220321script3"
 
         x_min = [18401.18]
         x_max = [50000.0]

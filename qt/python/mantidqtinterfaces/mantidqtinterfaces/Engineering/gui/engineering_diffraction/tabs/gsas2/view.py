@@ -18,10 +18,13 @@ class GSAS2View(QtWidgets.QWidget, Ui_calib):
     def __init__(self, parent=None, instrument="ENGINX"):
         super(GSAS2View, self).__init__(parent)
         self.setupUi(self)
-        one_many_int_float_comma_separated = \
+        none_one_many_int_float_comma_separated = \
             QRegExpValidator(QtCore.QRegExp(r"^(?:\d+(?:\.\d*)?|\.\d+)(?:,(?:\d+(?:\.\d*)?|\.\d+))*$"),
                              self.override_unitcell_length)
-        self.override_unitcell_length.setValidator(one_many_int_float_comma_separated)
+        self.override_unitcell_length.setValidator(none_one_many_int_float_comma_separated)
+        none_or_int_list_comma_separated = QRegExpValidator(QtCore.QRegExp(r"^(\d+(,\d+)*)?$/gm"),
+                                                            self.override_unitcell_length)
+        self.data_indexing_line_edit.setValidator(none_or_int_list_comma_separated)
 
     def set_refine_clicked(self, slot):
         self.refine_button.clicked.connect(slot)
@@ -30,3 +33,7 @@ class GSAS2View(QtWidgets.QWidget, Ui_calib):
         return [self.refinement_method_combobox.currentText(), self.override_unitcell_length.text(),
                 self.refine_microstrain_checkbox.isChecked(), self.refine_sigma_one_checkbox.isChecked(),
                 self.refine_gamma_y_checkbox.isChecked()]
+
+    def get_load_parameters(self):
+        return [self.project_name_line_edit.text(), self.focused_data_path_line_edit.text(),
+                self.data_indexing_line_edit.text(), self.phase_file_path_line_edit.text()]

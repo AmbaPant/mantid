@@ -22,7 +22,8 @@ class TestGSAS2Model(unittest.TestCase):
         # self.mock_inst = mock.MagicMock()
 
     def test_run_model(self):
-        success_state = self.model.run_model(["Pawley", "3.65, 3.65, 3.65", True, True, True])
+        success_state = self.model.run_model(["220321script3", "Save_gss_305761_307521_bank_1_bgsub.gsa",
+                                              "1", "FE_GAMMA.cif"], ["Pawley", "3.65, 3.65, 3.65", True, True, True])
         assert success_state, "run_model failed!"
 
     # @patch(data_model_path + ".FittingDataModel.update_log_workspace_group")
