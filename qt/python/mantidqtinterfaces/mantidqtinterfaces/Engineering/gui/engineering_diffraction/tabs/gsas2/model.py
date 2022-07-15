@@ -14,6 +14,7 @@ import numpy as np
 from mantid.geometry import CrystalStructure, ReflectionGenerator, ReflectionConditionFilter
 from mantid.simpleapi import CreateWorkspace, logger
 from mantidqtinterfaces.Engineering.gui.engineering_diffraction.tabs.gsas2 import parse_inputs
+from mantidqtinterfaces.Engineering.gui.engineering_diffraction.tabs.common import output_settings
 
 
 class GSAS2Model(object):
@@ -259,7 +260,7 @@ class GSAS2Model(object):
         # refine_unit_cell = True
 
         '''Inputs GUI'''
-        path_to_gsas2 = "/home/danielmurphy/gsas2/"
+        path_to_gsas2 = output_settings.get_path_to_gsas2() + "/"   # "/home/danielmurphy/gsas2/"
         save_directory = "/home/danielmurphy/Downloads/GSASdata/new_outputs/"
         data_directory = "/home/danielmurphy/Desktop/GSASMantiddata_030322/"
         refinement_method = refinement_parameters[0]  # "Pawley"

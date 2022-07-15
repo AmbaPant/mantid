@@ -25,6 +25,10 @@ class SettingsView(QtWidgets.QDialog, Ui_settings):
         self.finder_fullCalib.setLabelText("Full Calibration")
         self.finder_fullCalib.isForRunFiles(False)
 
+        self.finder_path_to_gsas2.setLabelText("Path to GSASII")
+        self.finder_path_to_gsas2.isForRunFiles(False)
+        self.finder_path_to_gsas2.isForDirectory(True)
+
         # set text of labels
         self.log_list_label.setText("Check logs to average when loading focused data")
         self.primary_log_label.setText(
@@ -77,6 +81,9 @@ class SettingsView(QtWidgets.QDialog, Ui_settings):
     def get_peak_function(self):
         return self.peak_list.currentText()
 
+    def get_path_to_gsas2(self):
+        return self.finder_path_to_gsas2.getFirstFilename()
+
     # =================
     # Component Setters
     # =================
@@ -126,6 +133,9 @@ class SettingsView(QtWidgets.QDialog, Ui_settings):
     def populate_peak_function_list(self, peak_names):
         self.peak_list.addItems(peak_names.split(','))
 
+    def set_path_to_gsas2(self, text):
+        self.finder_path_to_gsas2.setText(text)
+
     # =================
     # Force Actions
     # =================
@@ -135,3 +145,6 @@ class SettingsView(QtWidgets.QDialog, Ui_settings):
 
     def find_save(self):
         self.finder_save.findFiles(True)
+
+    def find_path_to_gsas2(self):
+        self.finder_path_to_gsas2.findFiles(True)
