@@ -5,6 +5,8 @@
 #   Institut Laue - Langevin & CSNS, Institute of High Energy Physics, CAS
 # SPDX - License - Identifier: GPL - 3.0 +
 # pylint: disable=invalid-name
+from mantidqtinterfaces.Engineering.gui.engineering_diffraction.tabs.common import INSTRUMENT_DICT
+# create_error_message, CalibrationObserver
 
 
 class GSAS2Presenter(object):
@@ -12,6 +14,8 @@ class GSAS2Presenter(object):
         self.model = model
         self.view = view
 
+        self.rb_num = None
+        self.instrument = "ENGINX"
         self.connect_view_signals()
 
     def connect_view_signals(self):
@@ -20,4 +24,12 @@ class GSAS2Presenter(object):
     def on_refine_clicked(self):
         load_params = self.view.get_load_parameters()
         refine_params = self.view.get_refinement_parameters()
-        self.model.run_model(load_params, refine_params)
+        self.model.run_model(load_params, refine_params, self.rb_num)
+
+    def set_rb_num(self, rb_num):
+        self.rb_num = rb_num
+
+    def set_instrument_override(self, instrument):
+        instrument = INSTRUMENT_DICT[instrument]
+        self.view.set_instrument_override(instrument)
+        self.instrument = instrument

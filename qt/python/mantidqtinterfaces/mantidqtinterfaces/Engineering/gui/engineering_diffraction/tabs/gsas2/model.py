@@ -6,6 +6,7 @@
 # SPDX - License - Identifier: GPL - 3.0 +
 import os
 import subprocess
+import shutil
 import time
 import datetime
 
@@ -210,7 +211,7 @@ class GSAS2Model(object):
         axes.legend(fontsize=8.0).set_draggable(True)
         plt.show()
 
-    def run_model(self, load_parameters, refinement_parameters, ):
+    def run_model(self, load_parameters, refinement_parameters, rb_num):
 
         success_state = 0
 
@@ -261,7 +262,17 @@ class GSAS2Model(object):
 
         '''Inputs GUI'''
         path_to_gsas2 = output_settings.get_path_to_gsas2() + "/"   # "/home/danielmurphy/gsas2/"
-        save_directory = "/home/danielmurphy/Downloads/GSASdata/new_outputs/"
+        save_dir = os.path.join(output_settings.get_output_path())  #  "/home/danielmurphy/Downloads/GSASdata/new_outputs/"
+        # save output
+        gsas2_save_dirs = [os.path.join(save_dir, "GSAS2", "")]
+        if rb_num:
+            gsas2_save_dirs.append(os.path.join(save_dir, "User", rb_num, "GSAS2", ""))
+            '''TODO: Decide how to tie calibration grouping to GSAS2 tab,
+            can we load it from the focused data? Maybe just in the name of the focused data?'''
+            # if calibration.group == GROUP.TEXTURE20 or calibration.group == GROUP.TEXTURE30:
+            #     calib_dirs.pop(0)  # only save to RB directory to limit number files saved
+        save_directory = gsas2_save_dirs[0]
+
         data_directory = "/home/danielmurphy/Desktop/GSASMantiddata_030322/"
         refinement_method = refinement_parameters[0]  # "Pawley"
         data_files = [load_parameters[1]]  # ["Save_gss_305761_307521_bank_1_bgsub.gsa"]  # ["ENGINX_305761_307521_all_banks_TOF.gss"]
@@ -378,17 +389,29 @@ class GSAS2Model(object):
             self.plot_gsas_histogram(gsas_histogram_workspace, reflections, project_name, index_histograms, x_min,
                                      x_max)
 
-        make_user_save_directory = ("mkdir -p " + user_save_directory)
-        out_make_user_save_directory, err_make_user_save_directory = self.call_subprocess(make_user_save_directory)
-        if err_make_user_save_directory:
-            raise ValueError("Could not create the user save directory {user_save_directory}")
+        for new_directory in gsas2_save_dirs:
+            os.makedirs(new_directory, exist_ok=True)
 
-        for output_file in os.listdir(temporary_save_directory):
+        save_success_message = f"\n\nOutput GSAS-II files saved in {user_save_directory}"
+
+        exist_extra_save_dirs = False
+        if len(gsas2_save_dirs) > 1:
+            exist_extra_save_dirs = True
+            gsas2_save_dirs.pop(0)
+
+        for output_file_index, output_file in enumerate(os.listdir(temporary_save_directory)):
             os.rename(os.path.join(temporary_save_directory, output_file),
                       os.path.join(user_save_directory, output_file))
-            success_state = 1
+            if exist_extra_save_dirs:
+                for extra_save_dir in gsas2_save_dirs:
+                    shutil.copy(os.path.join(user_save_directory, output_file),
+                                os.path.join(extra_save_dir, output_file))
+                    if output_file_index == 0:
+                        save_success_message += f" and in {extra_save_dir}"
+
         os.rmdir(temporary_save_directory)
-        logger.notice(f"\n\nOutput GSAS-II files saved in {user_save_directory}")
+        logger.notice(save_success_message)
+        success_state = 1
         return success_state
 
         # # open GSAS-II project

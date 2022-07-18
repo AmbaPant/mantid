@@ -29,6 +29,11 @@ class GSAS2View(QtWidgets.QWidget, Ui_calib):
     def set_refine_clicked(self, slot):
         self.refine_button.clicked.connect(slot)
 
+    def set_instrument_override(self, instrument):
+        # self.finder_focus.setInstrumentOverride(instrument)
+        # self.finder_vanadium.setInstrumentOverride(instrument)
+        pass
+
     def get_refinement_parameters(self):
         return [self.refinement_method_combobox.currentText(), self.override_unitcell_length.text(),
                 self.refine_microstrain_checkbox.isChecked(), self.refine_sigma_one_checkbox.isChecked(),
