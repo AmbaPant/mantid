@@ -23,8 +23,9 @@ class GSAS2Presenter(object):
 
     def on_refine_clicked(self):
         load_params = self.view.get_load_parameters()
+        project_name = self.view.get_project_name()
         refine_params = self.view.get_refinement_parameters()
-        self.model.run_model(load_params, refine_params, self.rb_num)
+        self.model.run_model(load_params, refine_params, project_name, self.rb_num)
 
     def set_rb_num(self, rb_num):
         self.rb_num = rb_num

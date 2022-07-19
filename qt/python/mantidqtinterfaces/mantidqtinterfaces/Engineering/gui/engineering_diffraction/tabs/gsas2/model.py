@@ -211,7 +211,7 @@ class GSAS2Model(object):
         axes.legend(fontsize=8.0).set_draggable(True)
         plt.show()
 
-    def run_model(self, load_parameters, refinement_parameters, rb_num):
+    def run_model(self, load_parameters, refinement_parameters, project_name, rb_num):
 
         success_state = 0
 
@@ -273,13 +273,13 @@ class GSAS2Model(object):
             #     calib_dirs.pop(0)  # only save to RB directory to limit number files saved
         save_directory = gsas2_save_dirs[0]
 
-        data_directory = "/home/danielmurphy/Desktop/GSASMantiddata_030322/"
+        data_directory = ""  # "/home/danielmurphy/Desktop/GSASMantiddata_030322/"
         refinement_method = refinement_parameters[0]  # "Pawley"
-        data_files = [load_parameters[1]]  # ["Save_gss_305761_307521_bank_1_bgsub.gsa"]  # ["ENGINX_305761_307521_all_banks_TOF.gss"]
-        histogram_indexing = [int(x) for x in load_parameters[2]]  # [1]  # assume only indexing when using 1 histogram file
-        instrument_files = ["ENGINX_305738_bank_1.prm"]
-        phase_files = [load_parameters[3]]  # ["FE_GAMMA.cif"]
-        project_name = load_parameters[0]  # "220321script3"
+        data_files = [load_parameters[2]]  # ["Save_gss_305761_307521_bank_1_bgsub.gsa"]  # ["ENGINX_305761_307521_all_banks_TOF.gss"]
+        histogram_indexing = [int(x) for x in list(load_parameters[3])]  # [1]  # assume only indexing when using 1 histogram file
+        instrument_files = [load_parameters[0]]  # ["ENGINX_305738_bank_1.prm"]
+        phase_files = [load_parameters[1]]  # ["FE_GAMMA.cif"]
+        # project_name = input param  # "220321script3"
 
         x_min = [18401.18]
         x_max = [50000.0]

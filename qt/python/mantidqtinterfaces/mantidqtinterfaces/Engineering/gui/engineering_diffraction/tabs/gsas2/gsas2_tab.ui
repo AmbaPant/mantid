@@ -43,64 +43,31 @@ QGroupBox:title {
       <enum>QLayout::SetDefaultConstraint</enum>
      </property>
      <item>
-      <widget class="QGroupBox" name="loadingGroup_7">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+      <layout class="QGridLayout" name="gridLayout_17" rowstretch="0" columnstretch="0,0">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetDefaultConstraint</enum>
        </property>
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
+       <property name="rightMargin">
+        <number>300</number>
        </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
+       <property name="verticalSpacing">
+        <number>6</number>
        </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="title">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignBottom|Qt::AlignHCenter</set>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-       <property name="checkable">
-        <bool>false</bool>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_15">
-        <property name="rightMargin">
-         <number>300</number>
-        </property>
-        <item row="1" column="0">
-         <layout class="QGridLayout" name="gridLayout_17" rowstretch="0,0" columnstretch="0,0">
-          <property name="sizeConstraint">
-           <enum>QLayout::SetDefaultConstraint</enum>
-          </property>
-          <property name="verticalSpacing">
-           <number>6</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>Project Name</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="project_name_line_edit">
-            <property name="text">
-             <string>220321script3</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_9">
+         <property name="text">
+          <string>Project Name</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="project_name_line_edit">
+         <property name="text">
+          <string>220321script3</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
       <spacer name="verticalSpacer_5">
@@ -149,49 +116,35 @@ QGroupBox:title {
        </property>
        <layout class="QGridLayout" name="gridLayout_11">
         <item row="1" column="0">
-         <layout class="QGridLayout" name="gridLayout_12" rowstretch="0,0,0" columnstretch="0,0">
+         <layout class="QGridLayout" name="gridLayout_12" rowstretch="0,0,0" columnstretch="0">
           <property name="sizeConstraint">
            <enum>QLayout::SetDefaultConstraint</enum>
           </property>
           <property name="verticalSpacing">
            <number>6</number>
           </property>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="phase_file_path_line_edit">
-            <property name="text">
-             <string>FE_GAMMA.cif</string>
-            </property>
-           </widget>
-          </item>
           <item row="2" column="0">
-           <widget class="QLabel" name="label_19">
-            <property name="text">
-             <string>Phase file</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="instrument_line_edit">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="0" column="0">
+             <widget class="FileFinderWidget" name="phase_file_finder" native="true"/>
+            </item>
+           </layout>
           </item>
           <item row="0" column="0">
-           <widget class="QLabel" name="label_20">
-            <property name="text">
-             <string>Instrument Group File</string>
-            </property>
-           </widget>
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="0" column="0">
+             <widget class="FileFinderWidget" name="instrument_group_file_finder" native="true"/>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
         <item row="2" column="0">
-         <layout class="QGridLayout" name="gridLayout_13" rowstretch="0,0,0" columnstretch="0,0,0,0">
+         <layout class="QGridLayout" name="gridLayout_13" rowstretch="0,0,0" columnstretch="0,0,0">
           <property name="sizeConstraint">
            <enum>QLayout::SetFixedSize</enum>
           </property>
-          <item row="2" column="3">
+          <item row="2" column="2">
            <widget class="QLineEdit" name="data_indexing_line_edit">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -206,10 +159,7 @@ QGroupBox:title {
              </size>
             </property>
             <property name="text">
-             <string>1</string>
-            </property>
-            <property name="maxLength">
-             <number>32</number>
+             <string/>
             </property>
             <property name="frame">
              <bool>true</bool>
@@ -222,26 +172,32 @@ QGroupBox:title {
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
-           <widget class="QLabel" name="label_21">
-            <property name="text">
-             <string>Data Indexing</string>
-            </property>
-           </widget>
-          </item>
           <item row="2" column="1">
-           <widget class="QLineEdit" name="focused_data_path_line_edit">
+           <widget class="QLabel" name="label_21">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
-             <string>Save_gss_305761_307521_bank_1_bgsub.gsa</string>
+             <string>Index</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QLabel" name="label_22">
-            <property name="text">
-             <string>Focused Data</string>
-            </property>
-           </widget>
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="0" column="0">
+             <widget class="FileFinderWidget" name="focused_data_file_finder" native="true">
+              <property name="text" stdset="0">
+               <string>Save_gss_305761_307521_bank_1_bgsub.gsa</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
@@ -342,7 +298,7 @@ QGroupBox:title {
            </layout>
           </item>
           <item row="0" column="1">
-           <layout class="QGridLayout" name="gridLayout_10" rowstretch="0,0,0,0,0,0" columnstretch="0,0">
+           <layout class="QGridLayout" name="gridLayout_10" rowstretch="0,0,0,0,0,0" columnstretch="0">
             <property name="sizeConstraint">
              <enum>QLayout::SetDefaultConstraint</enum>
             </property>
@@ -668,6 +624,14 @@ QGroupBox:title {
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>FileFinderWidget</class>
+   <extends>QWidget</extends>
+   <header>mantidqt.widgets.filefinderwidget</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
