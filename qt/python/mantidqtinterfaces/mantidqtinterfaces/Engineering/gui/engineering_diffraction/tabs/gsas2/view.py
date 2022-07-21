@@ -9,6 +9,7 @@ from qtpy.QtGui import QRegExpValidator
 from qtpy.QtCore import Qt
 # from qtpy.QtGui import QCursor
 from qtpy.QtWidgets import QDockWidget, QMainWindow, QSizePolicy  # QMenu
+from os import path
 
 from mantidqt.utils.qt import load_ui
 from matplotlib.figure import Figure
@@ -50,7 +51,6 @@ class GSAS2View(QtWidgets.QWidget, Ui_calib):
         # Plotting
         self.figure = None
         self.toolbar = None
-        self.fitprop_toolbar = None
         self.plot_dock = None
         self.dock_window = None
         self.initial_chart_width = None
@@ -71,6 +71,17 @@ class GSAS2View(QtWidgets.QWidget, Ui_calib):
         # self.finder_focus.setInstrumentOverride(instrument)
         # self.finder_vanadium.setInstrumentOverride(instrument)
         pass
+
+    def set_default_files(self, filepaths):
+        if not filepaths:
+            return
+        self.focused_data_file_finder.setUserInput(",".join(filepaths))
+        directories = set()
+        for filepath in filepaths:
+            directory, discard = path.split(filepath)
+            directories.add(directory)
+        if len(directories) == 1:
+            self.focused_data_file_finder.setLastDirectory(directory)
 
     # =================
     # Component Setters

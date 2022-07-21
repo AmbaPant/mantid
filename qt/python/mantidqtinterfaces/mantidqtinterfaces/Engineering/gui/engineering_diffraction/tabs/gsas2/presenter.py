@@ -6,7 +6,7 @@
 # SPDX - License - Identifier: GPL - 3.0 +
 # pylint: disable=invalid-name
 from mantidqtinterfaces.Engineering.gui.engineering_diffraction.tabs.common import INSTRUMENT_DICT
-
+from mantidqt.utils.observer_pattern import GenericObserverWithArgPassing
 PLOT_KWARGS = {"linestyle": "", "marker": "x", "markersize": "3"}
 
 
@@ -17,6 +17,8 @@ class GSAS2Presenter(object):
 
         self.rb_num = None
         self.instrument = "ENGINX"
+        self.focus_run_observer_gsas2 = GenericObserverWithArgPassing(
+            self.view.set_default_files)
         self.connect_view_signals()
 
     def connect_view_signals(self):

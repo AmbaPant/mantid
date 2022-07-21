@@ -429,6 +429,7 @@ def focus_run(sample_paths, vanadium_path, plot_output, rb_num, calibration, sav
 
     # Loop over runs and focus
     focused_files_list = []
+    focused_files_gsas2_list = []
     output_workspaces = []  # List of focused workspaces to plot.
     for sample_path in sample_paths:
         ws_sample = _load_run_and_convert_to_dSpacing(sample_path, calibration.get_instrument(), full_calib)
@@ -439,8 +440,11 @@ def focus_run(sample_paths, vanadium_path, plot_output, rb_num, calibration, sav
             _save_output_files(focus_dirs, ws_foc, calibration, van_run, rb_num)
             # convert units to TOF and save again
             ws_foc = mantid.ConvertUnits(InputWorkspace=ws_foc, OutputWorkspace=ws_foc.name(), Target='TOF')
-            nxs_paths = _save_output_files(focus_dirs, ws_foc, calibration, van_run, rb_num)
+            nxs_paths, gss_path = _save_output_files(focus_dirs, ws_foc, calibration, van_run, rb_num)
             focused_files_list.extend(nxs_paths)  # list of .nsx paths for that sample using last dir in focus_dirs
+            print(type(gss_path), len(gss_path))
+            focused_files_gsas2_list.extend(gss_path)
+            print(type(focused_files_gsas2_list), len(focused_files_gsas2_list))
             output_workspaces.append(ws_foc.name())
 
     # Plot the output
@@ -449,7 +453,7 @@ def focus_run(sample_paths, vanadium_path, plot_output, rb_num, calibration, sav
         if plot_output:
             _plot_focused_workspaces(output_workspaces)
 
-    return focused_files_list
+    return focused_files_list, focused_files_gsas2_list
 
 
 def process_vanadium(vanadium_path, calibration, full_calib):
@@ -541,7 +545,10 @@ def _save_output_files(focus_dirs, sample_ws_foc, calibration, van_run, rb_num=N
     for focus_dir in focus_dirs:
         if not path.exists(focus_dir):
             makedirs(focus_dir)
-        mantid.SaveGSS(InputWorkspace=sample_ws_foc, Filename=path.join(focus_dir, ascii_fname + '.gss'),
+
+        gss_path = path.join(focus_dir, ascii_fname + '.gss')
+        gss_paths = [gss_path]
+        mantid.SaveGSS(InputWorkspace=sample_ws_foc, Filename=gss_path,
                        SplitFiles=False, UseSpectrumNumberAsBankID=True)
         mantid.SaveFocusedXYE(InputWorkspace=sample_ws_foc, Filename=path.join(focus_dir, ascii_fname + ".abc"),
                               SplitFiles=False, Format="TOPAS")
@@ -559,7 +566,7 @@ def _save_output_files(focus_dirs, sample_ws_foc, calibration, van_run, rb_num=N
             nxs_path = path.join(focus_dir, filename)
             mantid.SaveNexus(InputWorkspace=sample_ws_foc, Filename=nxs_path, WorkspaceIndexList=[ispec])
             nxs_paths.append(nxs_path)
-    return nxs_paths  # from last focus_dir only
+    return nxs_paths, gss_paths  # from last focus_dir only
 
 
 def _generate_output_file_name(inst, sample_run_no, van_run_no, suffix, xunit, ext=""):

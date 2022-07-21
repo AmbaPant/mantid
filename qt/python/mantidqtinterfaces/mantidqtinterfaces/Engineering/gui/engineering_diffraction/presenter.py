@@ -32,6 +32,7 @@ class EngineeringDiffractionPresenter(object):
         self.focus_presenter = None
         self.fitting_presenter = None
         self.settings_presenter = None
+        self.gsas2_presenter = None
 
         self.doc_folder = "diffraction"
         self.doc = "Engineering Diffraction"
@@ -74,6 +75,7 @@ class EngineeringDiffractionPresenter(object):
         gsas2_model = GSAS2Model()
         gsas2_view = GSAS2View(parent=view.tabs)
         self.gsas2_presenter = GSAS2Presenter(gsas2_model, gsas2_view)
+        self.focus_presenter.add_focus_gsas2_subscriber(self.gsas2_presenter.focus_run_observer_gsas2)
         view.tabs.addTab(gsas2_view, "GSAS II")
 
     def setup_settings(self, view):
