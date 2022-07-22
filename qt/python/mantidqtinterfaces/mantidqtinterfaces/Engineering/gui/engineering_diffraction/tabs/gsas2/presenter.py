@@ -18,7 +18,9 @@ class GSAS2Presenter(object):
         self.rb_num = None
         self.instrument = "ENGINX"
         self.focus_run_observer_gsas2 = GenericObserverWithArgPassing(
-            self.view.set_default_files)
+            self.view.set_default_gss_files)
+        self.prm_filepath_observer_gsas2 = GenericObserverWithArgPassing(
+            self.view.set_default_prm_files)
         self.connect_view_signals()
 
     def connect_view_signals(self):

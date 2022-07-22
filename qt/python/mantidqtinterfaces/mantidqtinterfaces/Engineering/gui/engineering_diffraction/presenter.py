@@ -76,6 +76,7 @@ class EngineeringDiffractionPresenter(object):
         gsas2_view = GSAS2View(parent=view.tabs)
         self.gsas2_presenter = GSAS2Presenter(gsas2_model, gsas2_view)
         self.focus_presenter.add_focus_gsas2_subscriber(self.gsas2_presenter.focus_run_observer_gsas2)
+        self.calibration_presenter.add_prm_gsas2_subscriber(self.gsas2_presenter.prm_filepath_observer_gsas2)
         view.tabs.addTab(gsas2_view, "GSAS II")
 
     def setup_settings(self, view):

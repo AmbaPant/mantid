@@ -176,9 +176,11 @@ def create_new_calibration(calibration, rb_num, plot_output, save_dir, full_cali
             calib_dirs.pop(0)  # only save to RB directory to limit number files saved
 
     for calib_dir in calib_dirs:
-        create_output_files(calib_dir, calibration, focused_ceria)
+        prm_filepath = create_output_files(calib_dir, calibration, focused_ceria)
 
     mantid.DeleteWorkspace(ceria_workspace)
+
+    return [prm_filepath]  # only from last calib_dir
 
 
 def write_prm_file(ws_foc, prm_savepath, spec_nums=None):
@@ -231,14 +233,15 @@ def load_existing_calibration_files(calibration):
     if not path.exists(prm_filepath):
         msg = f"Could not open GSAS calibration file: {prm_filepath}"
         logger.warning(msg)
-        return
+        return None
     try:
         # read diff constants from prm
         write_diff_consts_to_table_from_prm(prm_filepath)
     except RuntimeError:
         logger.error(f"Invalid file selected: {prm_filepath}")
-        return
+        return None
     calibration.load_relevant_calibration_files()
+    return [prm_filepath]
 
 
 def write_diff_consts_to_table_from_prm(prm_filepath):
@@ -356,6 +359,8 @@ def create_output_files(calibration_dir, calibration, ws_foc):
             nxs_filepath_bank = filepath + '.nxs'
             copy2(nxs_filepath, nxs_filepath_bank)
     logger.notice(f"\n\nCalibration files saved to: \"{calibration_dir}\"\n\n")
+
+    return prm_filepath  # if both banks, do not pass individual banks (prm_filepath_bank) to GSAS II tab
 
 
 def getParametersFromDetector(instrument, detector):

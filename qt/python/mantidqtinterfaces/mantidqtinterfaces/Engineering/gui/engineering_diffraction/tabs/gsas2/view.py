@@ -72,16 +72,22 @@ class GSAS2View(QtWidgets.QWidget, Ui_calib):
         # self.finder_vanadium.setInstrumentOverride(instrument)
         pass
 
-    def set_default_files(self, filepaths):
+    def set_default_gss_files(self, filepaths):
+        self.set_default_files(filepaths, self.focused_data_file_finder)
+
+    def set_default_prm_files(self, filepaths):
+        self.set_default_files(filepaths, self.instrument_group_file_finder)
+
+    def set_default_files(self, filepaths, file_finder):
         if not filepaths:
             return
-        self.focused_data_file_finder.setUserInput(",".join(filepaths))
+        file_finder.setUserInput(",".join(filepaths))
         directories = set()
         for filepath in filepaths:
             directory, discard = path.split(filepath)
             directories.add(directory)
         if len(directories) == 1:
-            self.focused_data_file_finder.setLastDirectory(directory)
+            file_finder.setLastDirectory(directory)
 
     # =================
     # Component Setters
