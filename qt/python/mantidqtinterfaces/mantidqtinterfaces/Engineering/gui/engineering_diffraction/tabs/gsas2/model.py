@@ -26,6 +26,17 @@ class GSAS2Model(object):
         self.x_min = None
         self.x_max = None
         self.number_histograms = None
+        self.refinement_method = None
+        self.terminate = False
+
+    def clear_input_components(self):
+        self.user_save_directory = None
+        self.project_name = None
+        self.x_min = None
+        self.x_max = None
+        self.number_histograms = None
+        self.refinement_method = None
+        self.terminate = False
 
     def call_subprocess(self, command_string):
         shell_output = subprocess.Popen([command_string.replace('"', '\\"')],
@@ -35,7 +46,10 @@ class GSAS2Model(object):
                                         stderr=subprocess.PIPE,
                                         close_fds=True,
                                         universal_newlines=True)
-        return shell_output.communicate()
+        # while shell_output == None:
+        #     if self.terminate:
+        #         shell_output.terminate()
+        return shell_output.communicate()  # timeout=15)
 
     def format_shell_output(self, title, shell_output_string):
         double_line = "-" * (len(title) + 2) + "\n" + "-" * (len(title) + 2)
@@ -209,19 +223,13 @@ class GSAS2Model(object):
         axis.plot(gsas_histogram, color='#ff0000', label='background', wkspIndex=3)
         axis.set_title(name_of_project + ' GSAS Refinement')
         _, y_max = axis.get_ylim()
-        axis.plot(reflection_positions, [-0.10 * y_max] * len(reflection_positions),
-                  color='#1105f0', label='reflections', linestyle='None', marker='|', mew=1.5, ms=8)
+        if reflection_positions:
+            axis.plot(reflection_positions, [-0.10 * y_max] * len(reflection_positions),
+                      color='#1105f0', label='reflections', linestyle='None', marker='|', mew=1.5, ms=8)
         axis.axvline(min_x[histogram_index], color='#246b01', linestyle='--')
         axis.axvline(max_x[histogram_index], color='#a80000', linestyle='--')
         axis.legend(fontsize=8.0).set_draggable(True)
         plt.show()
-
-    def clear_input_components(self):
-        self.user_save_directory = None
-        self.project_name = None
-        self.x_min = None
-        self.x_max = None
-        self.number_histograms = None
 
     def run_model(self, load_parameters, refinement_parameters, project_name, rb_num):
 
@@ -239,8 +247,8 @@ class GSAS2Model(object):
         # instrument_files = ["INST_XRY.PRM","inst_d1a.prm"]
         # phase_files = ["PbSO4-Wyckoff.cif"]
         #
-        # self.x_min = [16.0, 19.0]
-        # self.x_max = [158.4, 153.0]
+        self.x_min = [16.0] #, 19.0]
+        self.x_max = [158.4] #, 153.0]
         #
         # override_cell_lengths = [3.65, 3.65, 3.65] # in presenter force to empty or len3 list of floats
         # refine_background = True
@@ -286,7 +294,7 @@ class GSAS2Model(object):
         save_directory = gsas2_save_dirs[0]
 
         data_directory = ""  # "/home/danielmurphy/Desktop/GSASMantiddata_030322/"
-        refinement_method = refinement_parameters[0]  # "Pawley"
+        self.refinement_method = refinement_parameters[0]  # "Pawley"
         data_files = [load_parameters[2]]  # ["Save_gss_305761_307521_bank_1_bgsub.gsa"]  # ["ENGINX_305761_307521_all_banks_TOF.gss"]
         histogram_indexing = [int(x) for x in list(load_parameters[3])]  # [1]  # assume only indexing when using 1 histogram file
         instrument_files = [load_parameters[0]]  # ["ENGINX_305738_bank_1.prm"]
@@ -317,7 +325,7 @@ class GSAS2Model(object):
                                                        phase_filepath)  # [3.65, 3.65, 3.65]  #  I
         # should force to empty, len1 or len3 list of floats
         mantid_pawley_reflections = None
-        if refinement_method == 'Pawley':
+        if self.refinement_method == 'Pawley':
             mantid_pawley_reflections = self.create_pawley_reflections(
                 cell_lengths=chosen_cell_lengths,
                 space_group=self.read_space_group(phase_filepath),
@@ -336,7 +344,7 @@ class GSAS2Model(object):
             raise ValueError(f"Histogram indexing is currently only supported, when the "
                              + f"number of data_files ({len(data_files)}) == 1")
 
-        if refinement_method == 'Pawley' and not mantid_pawley_reflections:
+        if self.refinement_method == 'Pawley' and not mantid_pawley_reflections:
             raise ValueError(f"No Pawley Reflections were generated for the phases provided. Not calling GSAS-II.")
 
         if len(instrument_files) != 1 or len(instrument_files) != self.number_histograms:
@@ -350,7 +358,7 @@ class GSAS2Model(object):
             temporary_save_directory=temporary_save_directory,
             data_directory=data_directory,
             project_name=self.project_name,
-            refinement_method=refinement_method,
+            refinement_method=self.refinement_method,
             refine_background=refine_background,
             refine_microstrain=refine_microstrain,
             refine_sigma_one=refine_sigma_one,
@@ -399,6 +407,7 @@ class GSAS2Model(object):
             gsas2_save_dirs.pop(0)
 
         for output_file_index, output_file in enumerate(os.listdir(temporary_save_directory)):
+            os.makedirs(self.user_save_directory, exist_ok=True)
             os.rename(os.path.join(temporary_save_directory, output_file),
                       os.path.join(self.user_save_directory, output_file))
             if exist_extra_save_dirs:
@@ -425,7 +434,15 @@ class GSAS2Model(object):
                                                                 self.x_min, self.x_max)
             phase_names_list = self.find_phase_names_in_lst(
                 os.path.join(self.user_save_directory, self.project_name + ".lst"))
-            reflections = self.load_gsas_reflections(self.user_save_directory, self.project_name, index_histograms,
-                                                     phase_names_list)
+
+            reflections = None
+            if self.refinement_method == "Pawley":
+                reflections = self.load_gsas_reflections(self.user_save_directory, self.project_name, index_histograms,
+                                                         phase_names_list)
+
             self.plot_gsas_histogram(axis, plot_kwargs, gsas_histogram_workspace, reflections, self.project_name, index_histograms,
                                      self.x_min, self.x_max)
+
+    def terminate_gsas2(self):
+        pass
+        # self.terminate = True

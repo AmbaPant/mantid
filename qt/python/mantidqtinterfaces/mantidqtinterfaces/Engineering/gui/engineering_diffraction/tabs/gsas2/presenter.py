@@ -25,6 +25,7 @@ class GSAS2Presenter(object):
 
     def connect_view_signals(self):
         self.view.set_refine_clicked(self.on_refine_clicked)
+        self.view.set_terminate_clicked(self.on_terminate_clicked)
 
     def on_refine_clicked(self):
         load_params = self.view.get_load_parameters()
@@ -55,3 +56,7 @@ class GSAS2Presenter(object):
 
     def clear_plot(self):
         self.view.clear_figure()
+
+    def on_terminate_clicked(self):
+        self.model.terminate_gsas2()
+        print("Terminating")

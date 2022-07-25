@@ -38,15 +38,18 @@ class GSAS2View(QtWidgets.QWidget, Ui_calib):
 
         self.instrument_group_file_finder.setLabelText("Instrument Group")
         self.instrument_group_file_finder.isForRunFiles(False)
-        self.instrument_group_file_finder.setFileExtensions([".prm"])
+        self.instrument_group_file_finder.setFileExtensions([".prm, .xra"])
+        self.instrument_group_file_finder.allowMultipleFiles(True)
 
         self.phase_file_finder.setLabelText("Phase")
         self.phase_file_finder.isForRunFiles(False)
-        self.phase_file_finder.setFileExtensions([".CIF", ".cif"])
+        self.phase_file_finder.setFileExtensions([".cif"])
+        self.phase_file_finder.allowMultipleFiles(True)
 
         self.focused_data_file_finder.setLabelText("Focused Data")
         self.focused_data_file_finder.isForRunFiles(False)
         self.focused_data_file_finder.setFileExtensions([".gss", ".gsa"])
+        self.focused_data_file_finder.allowMultipleFiles(True)
 
         # Plotting
         self.figure = None
@@ -66,6 +69,9 @@ class GSAS2View(QtWidgets.QWidget, Ui_calib):
 
     def set_refine_clicked(self, slot):
         self.refine_button.clicked.connect(slot)
+
+    def set_terminate_clicked(self, slot):
+        self.terminate_button.clicked.connect(slot)
 
     def set_instrument_override(self, instrument):
         # self.finder_focus.setInstrumentOverride(instrument)
