@@ -70,8 +70,8 @@ class GSAS2View(QtWidgets.QWidget, Ui_calib):
     def set_refine_clicked(self, slot):
         self.refine_button.clicked.connect(slot)
 
-    def set_terminate_clicked(self, slot):
-        self.terminate_button.clicked.connect(slot)
+    # def set_terminate_clicked(self, slot):
+    #     self.terminate_button.clicked.connect(slot)
 
     # def set_plot_index_changed(self, slot):
     #     self.number_output_histograms_combobox.currentTextChanged(slot)

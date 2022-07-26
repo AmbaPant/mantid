@@ -27,7 +27,7 @@ class GSAS2Model(object):
         self.x_max = None
         self.number_histograms = None
         self.refinement_method = None
-        self.terminate = False
+        # self.terminate = False
 
     def clear_input_components(self):
         self.user_save_directory = None
@@ -36,7 +36,7 @@ class GSAS2Model(object):
         self.x_max = None
         self.number_histograms = None
         self.refinement_method = None
-        self.terminate = False
+        # self.terminate = False
 
     def call_subprocess(self, command_string):
         shell_output = subprocess.Popen([command_string.replace('"', '\\"')],
@@ -452,6 +452,6 @@ class GSAS2Model(object):
         self.plot_gsas_histogram(axis, plot_kwargs, gsas_histogram_workspace, reflections, self.project_name, index_histograms,
                                  self.x_min, self.x_max)
 
-    def terminate_gsas2(self):
-        pass
-        # self.terminate = True
+    # def terminate_gsas2(self):
+    #     pass
+    #     # self.terminate = True
