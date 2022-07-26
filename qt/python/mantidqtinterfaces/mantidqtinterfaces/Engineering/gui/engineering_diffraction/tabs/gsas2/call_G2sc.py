@@ -91,10 +91,11 @@ def enable_unit_cell(refine, override_unit_cell_lengths, project):
 
 
 def enable_limits(x_limits, project):
-    x_min, x_max = x_limits
-    if x_min and x_max:
-        for loop_index, loop_histogram in enumerate(project.histograms()):
-            loop_histogram.set_refinements({'Limits': [x_min[loop_index], x_max[loop_index]]})
+    if x_limits:
+        x_min, x_max = x_limits
+        if x_min and x_max:
+            for loop_index, loop_histogram in enumerate(project.histograms()):
+                loop_histogram.set_refinements({'Limits': [x_min[loop_index], x_max[loop_index]]})
 
 
 def run_microstrain_refinement(refine, project, path_to_project):

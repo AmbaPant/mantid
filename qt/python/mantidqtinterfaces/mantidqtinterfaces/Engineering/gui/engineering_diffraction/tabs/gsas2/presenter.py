@@ -55,7 +55,8 @@ class GSAS2Presenter(object):
     def plot_result(self, output_histogram_index):
         self.clear_plot()
         axes = self.view.get_axes()
-        output_histogram_index = int(output_histogram_index) - 1  # convert to zero-based indexing
+        output_histogram_index = int(output_histogram_index)
+        output_histogram_index -= 1  # convert to zero-based indexing
         for ax in axes:
             self.model.plot_result(output_histogram_index, ax, PLOT_KWARGS)
         self.view.update_figure()

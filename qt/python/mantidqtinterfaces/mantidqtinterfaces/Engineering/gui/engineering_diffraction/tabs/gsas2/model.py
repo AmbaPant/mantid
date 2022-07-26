@@ -336,9 +336,16 @@ class GSAS2Model(object):
         self.number_histograms = len(data_files)
         if histogram_indexing and len(data_files) == 1:
             self.number_histograms = len(histogram_indexing)
-        if len(self.x_min) != 0 and len(self.x_min) != self.number_histograms:
-            raise ValueError(f"The number of x_min values ({len(self.x_min)}) must equal the"
-                             + f"number of histograms ({self.number_histograms}))")
+        if len(self.x_min) != self.number_histograms:
+            if len(self.x_min) == 1:
+                self.x_min = [self.x_min] * self.number_histograms
+                self.x_max = [self.x_max] * self.number_histograms
+            else:
+                self.x_min = [18401.18]
+                self.x_max = [50000.0]
+        limits = None
+        if self.x_min:
+            limits = [self.x_min, self.x_max]
 
         if histogram_indexing and len(data_files) > 1:
             raise ValueError(f"Histogram indexing is currently only supported, when the "
@@ -368,7 +375,7 @@ class GSAS2Model(object):
             histogram_indexing=histogram_indexing,
             phase_files=phase_filepaths,
             instrument_files=instrument_files,
-            limits=[self.x_min, self.x_max],
+            limits=limits,
             mantid_pawley_reflections=mantid_pawley_reflections,
             override_cell_lengths=[float(x) for x in chosen_cell_lengths.split(" ")],
             refine_unit_cell=refine_unit_cell,
