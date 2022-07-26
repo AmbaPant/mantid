@@ -73,6 +73,9 @@ class GSAS2View(QtWidgets.QWidget, Ui_calib):
     def set_terminate_clicked(self, slot):
         self.terminate_button.clicked.connect(slot)
 
+    # def set_plot_index_changed(self, slot):
+    #     self.number_output_histograms_combobox.currentTextChanged(slot)
+
     def set_instrument_override(self, instrument):
         # self.finder_focus.setInstrumentOverride(instrument)
         # self.finder_vanadium.setInstrumentOverride(instrument)
@@ -95,6 +98,13 @@ class GSAS2View(QtWidgets.QWidget, Ui_calib):
         if len(directories) == 1:
             file_finder.setLastDirectory(directory)
 
+    def set_number_histograms(self, number_output_histograms):
+        print(number_output_histograms)
+        self.number_output_histograms_combobox.clear()
+        histogram_indices_items = [str(k) for k in range(1, number_output_histograms+1)]
+        self.number_output_histograms_combobox.addItems(histogram_indices_items)
+        self.number_output_histograms_combobox.setCurrentIndex(0)
+
     # =================
     # Component Setters
     # =================
@@ -109,8 +119,8 @@ class GSAS2View(QtWidgets.QWidget, Ui_calib):
                 self.refine_gamma_y_checkbox.isChecked()]
 
     def get_load_parameters(self):
-        return [self.instrument_group_file_finder.getFirstFilename(), self.phase_file_finder.getFirstFilename(),
-                self.focused_data_file_finder.getFirstFilename(), self.data_indexing_line_edit.text()]
+        return [self.instrument_group_file_finder.getFilenames(), self.phase_file_finder.getFilenames(),
+                self.focused_data_file_finder.getFilenames(), self.data_indexing_line_edit.text()]
 
     def get_project_name(self):
         return self.project_name_line_edit.text()

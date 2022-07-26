@@ -173,6 +173,7 @@ for phase_file in phase_files:
     gsas_project.add_phase(os.path.join(data_directory, phase_file))
 
 number_histograms = calculate_number_histograms(len(data_files), len(histogram_indexing))
+print(f"\n\n {number_histograms} {data_files} \n\n")
 assigned_instruments = assign_instruments_to_histograms(instrument_files, number_histograms)
 add_histograms(data_files, histogram_indexing, gsas_project, data_directory, assigned_instruments)
 

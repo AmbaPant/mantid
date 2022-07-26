@@ -473,7 +473,7 @@ QGroupBox:title {
         <string>Plot</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_16">
-        <item row="1" column="0">
+        <item row="2" column="0">
          <layout class="QGridLayout" name="gridLayout_18" rowstretch="0,0,0,0" columnstretch="0,0,0,0,0,0,0">
           <property name="sizeConstraint">
            <enum>QLayout::SetDefaultConstraint</enum>
@@ -675,8 +675,18 @@ QGroupBox:title {
           </item>
          </layout>
         </item>
-        <item row="0" column="0">
+        <item row="1" column="0">
          <layout class="QVBoxLayout" name="vLayout_plot"/>
+        </item>
+        <item row="0" column="0">
+         <widget class="QComboBox" name="number_output_histograms_combobox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>

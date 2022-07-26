@@ -26,15 +26,19 @@ class GSAS2Presenter(object):
     def connect_view_signals(self):
         self.view.set_refine_clicked(self.on_refine_clicked)
         self.view.set_terminate_clicked(self.on_terminate_clicked)
+        self.view.number_output_histograms_combobox.currentTextChanged.connect(self.on_plot_index_changed)
 
     def on_refine_clicked(self):
+        self.clear_plot()
         load_params = self.view.get_load_parameters()
         project_name = self.view.get_project_name()
         refine_params = self.view.get_refinement_parameters()
-        success = self.model.run_model(load_params, refine_params, project_name, self.rb_num)
-        if success:
-            self.clear_plot()
-            self.plot_result()
+        number_output_histograms = self.model.run_model(load_params, refine_params, project_name, self.rb_num)
+        self.plot_result(1)
+        self.view.set_number_histograms(number_output_histograms)
+
+    def on_plot_index_changed(self, new_plot_index):
+        self.plot_result(new_plot_index)
 
     def set_rb_num(self, rb_num):
         self.rb_num = rb_num
@@ -48,10 +52,12 @@ class GSAS2Presenter(object):
     # Plotting
     # ========
 
-    def plot_result(self):
+    def plot_result(self, output_histogram_index):
+        self.clear_plot()
         axes = self.view.get_axes()
+        output_histogram_index = int(output_histogram_index) - 1  # convert to zero-based indexing
         for ax in axes:
-            self.model.plot_result(ax, PLOT_KWARGS)
+            self.model.plot_result(output_histogram_index, ax, PLOT_KWARGS)
         self.view.update_figure()
 
     def clear_plot(self):

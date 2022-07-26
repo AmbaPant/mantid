@@ -133,7 +133,7 @@ class GSAS2Model(object):
                 space_group = "".join(split_string)
         return space_group
 
-    def choose_cell_lengths(self, overriding_cell_lengths: str, phase_file_path):
+    def choose_cell_lengths(self, overriding_cell_lengths: str, phase_file_path: str):
         if overriding_cell_lengths:
             if "," not in overriding_cell_lengths:
                 overriding_cell_lengths_list = [float(overriding_cell_lengths)] * 3
@@ -233,7 +233,6 @@ class GSAS2Model(object):
 
     def run_model(self, load_parameters, refinement_parameters, project_name, rb_num):
 
-        success_state = 0
         self.clear_input_components()
         self.project_name = project_name
 
@@ -247,8 +246,8 @@ class GSAS2Model(object):
         # instrument_files = ["INST_XRY.PRM","inst_d1a.prm"]
         # phase_files = ["PbSO4-Wyckoff.cif"]
         #
-        self.x_min = [16.0] #, 19.0]
-        self.x_max = [158.4] #, 153.0]
+        self.x_min = [16.0, 19.0]
+        self.x_max = [158.4, 153.0]
         #
         # override_cell_lengths = [3.65, 3.65, 3.65] # in presenter force to empty or len3 list of floats
         # refine_background = True
@@ -295,13 +294,13 @@ class GSAS2Model(object):
 
         data_directory = ""  # "/home/danielmurphy/Desktop/GSASMantiddata_030322/"
         self.refinement_method = refinement_parameters[0]  # "Pawley"
-        data_files = [load_parameters[2]]  # ["Save_gss_305761_307521_bank_1_bgsub.gsa"]  # ["ENGINX_305761_307521_all_banks_TOF.gss"]
+        data_files = load_parameters[2]  # ["Save_gss_305761_307521_bank_1_bgsub.gsa"]  # ["ENGINX_305761_307521_all_banks_TOF.gss"]
         histogram_indexing = [int(x) for x in list(load_parameters[3])]  # [1]  # assume only indexing when using 1 histogram file
-        instrument_files = [load_parameters[0]]  # ["ENGINX_305738_bank_1.prm"]
-        phase_files = [load_parameters[1]]  # ["FE_GAMMA.cif"]
+        instrument_files = load_parameters[0]  # ["ENGINX_305738_bank_1.prm"]
+        phase_filepaths = load_parameters[1]  # ["FE_GAMMA.cif"]
 
-        self.x_min = [18401.18]
-        self.x_max = [50000.0]
+        # self.x_min = [18401.18]
+        # self.x_max = [50000.0]
 
         refine_background = True
         refine_microstrain = refinement_parameters[2] # True
@@ -320,17 +319,18 @@ class GSAS2Model(object):
         make_temporary_save_directory = ("mkdir -p " + temporary_save_directory)
         out_make_temporary_save_directory, err_make_temporary_save_directory = self.call_subprocess(
             make_temporary_save_directory)
-        phase_filepath = os.path.join(data_directory, phase_files[0])
-        chosen_cell_lengths = self.choose_cell_lengths(refinement_parameters[1],
-                                                       phase_filepath)  # [3.65, 3.65, 3.65]  #  I
-        # should force to empty, len1 or len3 list of floats
-        mantid_pawley_reflections = None
-        if self.refinement_method == 'Pawley':
-            mantid_pawley_reflections = self.create_pawley_reflections(
-                cell_lengths=chosen_cell_lengths,
-                space_group=self.read_space_group(phase_filepath),
-                basis=self.read_basis(phase_filepath),
-                dmin=d_spacing_min)
+        # phase_filepath = os.path.join(data_directory, phase_files[0])
+        for loop_phase_filepath in phase_filepaths:
+            chosen_cell_lengths = self.choose_cell_lengths(refinement_parameters[1],
+                                                           loop_phase_filepath)  # [3.65, 3.65, 3.65]  #  I
+            # should force to empty, len1 or len3 list of floats
+            mantid_pawley_reflections = None
+            if self.refinement_method == 'Pawley':
+                mantid_pawley_reflections = self.create_pawley_reflections(
+                    cell_lengths=chosen_cell_lengths,
+                    space_group=self.read_space_group(loop_phase_filepath),
+                    basis=self.read_basis(loop_phase_filepath),
+                    dmin=d_spacing_min)
 
         '''Validation'''
         self.number_histograms = len(data_files)
@@ -347,7 +347,7 @@ class GSAS2Model(object):
         if self.refinement_method == 'Pawley' and not mantid_pawley_reflections:
             raise ValueError(f"No Pawley Reflections were generated for the phases provided. Not calling GSAS-II.")
 
-        if len(instrument_files) != 1 or len(instrument_files) != self.number_histograms:
+        if len(instrument_files) != 1 and len(instrument_files) != self.number_histograms:
             raise ValueError(f'The number of instrument files ({len(instrument_files)}) must be 1 '
                              f'or equal to the number of input histograms {self.number_histograms}')
 
@@ -366,7 +366,7 @@ class GSAS2Model(object):
             refine_histogram_scale_factor=refine_histogram_scale_factor,
             data_files=data_files,
             histogram_indexing=histogram_indexing,
-            phase_files=phase_files,
+            phase_files=phase_filepaths,
             instrument_files=instrument_files,
             limits=[self.x_min, self.x_max],
             mantid_pawley_reflections=mantid_pawley_reflections,
@@ -406,8 +406,10 @@ class GSAS2Model(object):
             exist_extra_save_dirs = True
             gsas2_save_dirs.pop(0)
 
+        if os.path.exists(self.user_save_directory):
+            shutil.rmtree(self.user_save_directory)
+        os.makedirs(self.user_save_directory, exist_ok=True)
         for output_file_index, output_file in enumerate(os.listdir(temporary_save_directory)):
-            os.makedirs(self.user_save_directory, exist_ok=True)
             os.rename(os.path.join(temporary_save_directory, output_file),
                       os.path.join(self.user_save_directory, output_file))
             if exist_extra_save_dirs:
@@ -419,29 +421,29 @@ class GSAS2Model(object):
 
         os.rmdir(temporary_save_directory)
         logger.notice(save_success_message)
-        success_state = 1
-        return success_state
+        return self.number_histograms
 
         # # open GSAS-II project
         # open_project_call = (path_to_gsas2 + "bin/python " + path_to_gsas2 + "GSASII/GSASII.py "
         #                      + os.path.join(self.user_save_directory, self.project_name + ".gpx"))
         # out_open_project_call, err_open_project_call = call_subprocess(open_project_call)
 
-    def plot_result(self, axis, plot_kwargs):
-        for index_histograms in range(self.number_histograms):
-            gsas_histogram_workspace = self.load_gsas_histogram(self.user_save_directory, self.project_name,
-                                                                index_histograms,
-                                                                self.x_min, self.x_max)
-            phase_names_list = self.find_phase_names_in_lst(
-                os.path.join(self.user_save_directory, self.project_name + ".lst"))
+    def plot_result(self, index_histograms, axis, plot_kwargs):
+        # for index_histograms in range(self.number_histograms):
+        # TODO: separate loading first and changing spectrum plotted later
+        gsas_histogram_workspace = self.load_gsas_histogram(self.user_save_directory, self.project_name,
+                                                            index_histograms,
+                                                            self.x_min, self.x_max)
+        phase_names_list = self.find_phase_names_in_lst(
+            os.path.join(self.user_save_directory, self.project_name + ".lst"))
 
-            reflections = None
-            if self.refinement_method == "Pawley":
-                reflections = self.load_gsas_reflections(self.user_save_directory, self.project_name, index_histograms,
-                                                         phase_names_list)
+        reflections = None
+        if self.refinement_method == "Pawley":
+            reflections = self.load_gsas_reflections(self.user_save_directory, self.project_name, index_histograms,
+                                                     phase_names_list)
 
-            self.plot_gsas_histogram(axis, plot_kwargs, gsas_histogram_workspace, reflections, self.project_name, index_histograms,
-                                     self.x_min, self.x_max)
+        self.plot_gsas_histogram(axis, plot_kwargs, gsas_histogram_workspace, reflections, self.project_name, index_histograms,
+                                 self.x_min, self.x_max)
 
     def terminate_gsas2(self):
         pass
